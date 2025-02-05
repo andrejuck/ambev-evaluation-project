@@ -12,3 +12,4 @@ obj
 */*/obj
 */*/bin/Debug
 */*/.vs
+docker-compose.override.yml
