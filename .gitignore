@@ -1,0 +1,11 @@
+backend/docker-compose.override.yml
+.vscode
+.vs
+bin
+obj
+*/obj
+*/bin/Debug
+*/.vs
+*/*/obj
+*/*/bin/Debug
+*/*/.vs
