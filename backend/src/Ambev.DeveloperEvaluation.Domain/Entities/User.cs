@@ -83,7 +83,7 @@ public class User : BaseEntity, IUser
     /// </summary>
     public User()
     {
-        CreatedAt = DateTime.UtcNow;
+        SetCreatedAt();
     }
 
     /// <summary>
@@ -121,7 +121,7 @@ public class User : BaseEntity, IUser
     public void Activate()
     {
         Status = UserStatus.Active;
-        UpdatedAt = DateTime.UtcNow;
+        SetUpdatedAt();
     }
 
     /// <summary>
@@ -131,7 +131,7 @@ public class User : BaseEntity, IUser
     public void Deactivate()
     {
         Status = UserStatus.Inactive;
-        UpdatedAt = DateTime.UtcNow;
+        SetUpdatedAt();
     }
 
     /// <summary>
@@ -141,6 +141,6 @@ public class User : BaseEntity, IUser
     public void Suspend()
     {
         Status = UserStatus.Suspended;
-        UpdatedAt = DateTime.UtcNow;
+        SetUpdatedAt();
     }
 }

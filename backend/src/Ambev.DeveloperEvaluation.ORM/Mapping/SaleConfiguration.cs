@@ -13,9 +13,8 @@ namespace Ambev.DeveloperEvaluation.ORM.Mapping
             builder.Property(u => u.Id).HasColumnType("uuid").HasDefaultValueSql("gen_random_uuid()");
 
             builder.HasIndex(s => s.SaleNumber).IsUnique();
-
             builder.Property(s => s.SaleNumber)
-                .IsRequired();
+                .ValueGeneratedOnAdd();
 
             builder.Property(s => s.SaleDate)
                 .IsRequired();
