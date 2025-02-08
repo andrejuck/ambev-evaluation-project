@@ -2,5 +2,6 @@
 {
     public class DeleteSaleResponse
     {
+        public bool Success { get; set; }
     }
 }
