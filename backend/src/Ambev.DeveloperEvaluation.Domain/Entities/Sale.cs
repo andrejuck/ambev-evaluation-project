@@ -28,7 +28,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         }
 
         public int SaleNumber { get; }
-        public DateTime SaleDate { get; private set; } = DateTime.Now;
+        public DateTime SaleDate { get; private set; } = DateTime.UtcNow;
         public Customer Customer { get; private set; }
         public decimal TotalAmount { get; private set; }
         public Branch Branch { get; private set; }
@@ -59,15 +59,21 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             SetUpdatedAt();
         }
 
-        public void PrepareForUpdate(Sale existingSale)
+        public void PrepareForUpdate(DateTime newSaleDate, List<SaleItem> items)
         {
-            SaleDate = existingSale.SaleDate;
-            Customer = existingSale.Customer;
-            Branch = existingSale.Branch;
-            Items = existingSale.Items; //Pode ser que de problema ao atualizar. Comportamento esperado é remove tudo e adiciona denovo
-            SaleStatus = existingSale.SaleStatus;
+            SyncronizeChildrenCollection(this.Items, items);
             SetUpdatedAt();
             CalculateTotalAmount();
+        }
+
+        public void BindCustomer(Customer newCustomer)
+        {
+            Customer = newCustomer;
+        }
+
+        public void BindBranch(Branch newBranch)
+        {
+            Branch = newBranch;
         }
 
         public void CalculateTotalAmount()

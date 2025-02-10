@@ -32,4 +32,19 @@ public class BaseEntity : IComparable<BaseEntity>
     {
         CreatedAt = DateTime.UtcNow;
     }
+
+    protected virtual void SyncronizeChildrenCollection<T>(List<T> existingCollection, List<T> newCollection)
+    {
+        var toDelete = existingCollection.Except(newCollection);
+        foreach (T item in newCollection)
+        {
+            T? val = existingCollection.SingleOrDefault((T e) => e.Equals(item));
+            if (val == null)
+            {
+                existingCollection.Add(item);
+            }
+        }
+
+        existingCollection.RemoveAll((T e) => toDelete.Contains(e));
+    }
 }

@@ -24,5 +24,13 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             UnitPrice = existingProduct.UnitPrice;
             SetUpdatedAt();
         }
+
+        public override bool Equals(object? obj)
+        {
+            if(obj == null) return false;
+
+            var otherObj = (Product)obj;
+            return Id.Equals(otherObj.Id) || ProductNumber.Equals(otherObj.ProductNumber);
+        }
     }
 }

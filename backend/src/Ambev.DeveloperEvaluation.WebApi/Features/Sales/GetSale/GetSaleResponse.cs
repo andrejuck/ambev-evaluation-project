@@ -6,7 +6,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.GetSale
 {
     public class GetSaleResponse
     {
-        public DateTime SaleDate { get; set; } = DateTime.Now;
+        public DateTime SaleDate { get; set; } = DateTime.UtcNow;
         public CustomerDTO Customer { get; set; } = new CustomerDTO();
         public BranchDTO Branch { get; set; } = new BranchDTO();
         public List<SaleItemDTO> Items { get; set; } = new List<SaleItemDTO>();
