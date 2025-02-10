@@ -2,6 +2,10 @@
 using Ambev.DeveloperEvaluation.Common.Validation;
 using Ambev.DeveloperEvaluation.Domain.Common;
 using Ambev.DeveloperEvaluation.Domain.Enums;
+using Ambev.DeveloperEvaluation.Domain.Events.Sale.StatusChangedSale;
+using Ambev.DeveloperEvaluation.Domain.Events.Sale.CreatedSale;
+using Ambev.DeveloperEvaluation.Domain.Events.Sale.DeletedSale;
+using Ambev.DeveloperEvaluation.Domain.Events.Sale.UpdatedSale;
 using Ambev.DeveloperEvaluation.Domain.Validation;
 
 namespace Ambev.DeveloperEvaluation.Domain.Entities
@@ -12,6 +16,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         {
             SetCreatedAt();
             CalculateTotalAmount();
+            _domainEvents.Add(new SaleCreatedDomainEvent(this));
         }
 
         public Sale(DateTime saleDate,
@@ -25,6 +30,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             Items = items;
             SetCreatedAt();
             CalculateTotalAmount();
+            _domainEvents.Add(new SaleCreatedDomainEvent(this));
         }
 
         public int SaleNumber { get; }
@@ -48,22 +54,37 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
 
         public void Approve()
         {
+            var oldStatus = SaleStatus;
             SaleStatus = SaleStatus.Approved;
             SetUpdatedAt();
+
+            _domainEvents.Add(new SaleStatusChangedDomainEvent(this, oldStatus));
         }
 
         public void Cancel()
         {
+            var oldStatus = SaleStatus;
             SaleStatus = SaleStatus.Cancelled;
             Items.ForEach(item => item.CancelItem());
             SetUpdatedAt();
+
+            _domainEvents.Add(new SaleStatusChangedDomainEvent(this, oldStatus));
         }
 
-        public void PrepareForUpdate(DateTime newSaleDate, List<SaleItem> items)
+        public void PrepareForUpdate(DateTime newSaleDate, SaleStatus status, List<SaleItem> items)
         {
+            SaleDate = newSaleDate;
+            SaleStatus = status;
             SyncronizeChildrenCollection(this.Items, items);
             SetUpdatedAt();
             CalculateTotalAmount();
+
+            _domainEvents.Add(new SaleModifiedDomainEvent(this));
+        }
+
+        public void PrepareForDeletion()
+        {
+            _domainEvents.Add(new SaleDeletedDomainEvent(this));
         }
 
         public void BindCustomer(Customer newCustomer)

@@ -4,6 +4,7 @@ using Ambev.DeveloperEvaluation.Domain.Repositories;
 using AutoMapper;
 using FluentValidation;
 using MediatR;
+using OneOf.Types;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
 {
@@ -14,18 +15,21 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
         private readonly IBranchRepository _branchRepository;
         private readonly ICustomerRepository _customerRepository;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
         public UpdateSaleHandler(ISaleRepository saleRepository,
             IProductRepository productRepository,
             IBranchRepository branchRepository,
             ICustomerRepository customerRepository,
-            IMapper mapper)
+            IMapper mapper,
+            IMediator mediator)
         {
             _saleRepository = saleRepository;
             _productRepository = productRepository;
             _branchRepository = branchRepository;
             _customerRepository = customerRepository;
             _mapper = mapper;
+            _mediator = mediator;
         }
 
         public async Task<UpdateSaleResult> Handle(UpdateSaleCommand request, CancellationToken cancellationToken)
@@ -54,10 +58,20 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
                 item.BindProduct(existingProduct);
             }
 
-            existingSale.PrepareForUpdate(request.SaleDate, updatedSaleItems);
-            var createSale = await _saleRepository.UpdateAsync(existingSale, cancellationToken);
+            existingSale.PrepareForUpdate(request.SaleDate, request.SaleStatus, updatedSaleItems);
+            var updatedSale = await _saleRepository.UpdateAsync(existingSale, cancellationToken);
 
-            var result = _mapper.Map<UpdateSaleResult>(createSale);
+            if (updatedSale != null)
+            {
+                foreach (var domainEvent in existingSale.DomainEvents)
+                {
+                    await _mediator.Send(domainEvent);
+                }
+
+                existingSale.ClearDomainEvents();
+            }
+
+            var result = _mapper.Map<UpdateSaleResult>(updatedSale);
             return result;
         }
     }

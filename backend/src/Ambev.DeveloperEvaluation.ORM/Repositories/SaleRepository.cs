@@ -52,15 +52,11 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
         /// <param name="id">The unique identifier of the sale to delete</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>True if the sale was deleted, false if not found</returns>
-        public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<bool> DeleteAsync(Sale sale, CancellationToken cancellationToken = default)
         {
-            var sale = await GetByIdAsync(id, cancellationToken);
-            if (sale == null)
-                return false;
-
-            _context.Sales.Remove(sale);
+            var state = _context.Sales.Remove(sale);
             await _context.SaveChangesAsync(cancellationToken);
-            return true;
+            return state.State == EntityState.Deleted;
         }
 
         /// <summary>

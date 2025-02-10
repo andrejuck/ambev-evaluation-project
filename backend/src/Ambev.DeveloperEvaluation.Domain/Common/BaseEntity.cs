@@ -1,4 +1,6 @@
 ﻿using Ambev.DeveloperEvaluation.Common.Validation;
+using Ambev.DeveloperEvaluation.Domain.Entities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Ambev.DeveloperEvaluation.Domain.Common;
 
@@ -7,6 +9,11 @@ public class BaseEntity : IComparable<BaseEntity>
     public Guid Id { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
+    [NotMapped]
+    protected readonly List<BaseDomainEvent<Sale>> _domainEvents = new();
+    [NotMapped]
+    public IReadOnlyCollection<BaseDomainEvent<Sale>> DomainEvents => _domainEvents.AsReadOnly();
+    public void ClearDomainEvents() => _domainEvents.Clear();
 
     public Task<IEnumerable<ValidationErrorDetail>> ValidateAsync()
     {
