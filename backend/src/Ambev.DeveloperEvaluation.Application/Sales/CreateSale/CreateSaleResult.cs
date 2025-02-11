@@ -6,6 +6,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
 {
     public class CreateSaleResult
     {
+        public Guid Id { get; set; }
         public DateTime SaleDate { get; set; } = DateTime.UtcNow;
         public CustomerDTO Customer { get; set; } = new CustomerDTO();
         public BranchDTO Branch { get; set; } = new BranchDTO();

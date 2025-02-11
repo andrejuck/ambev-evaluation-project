@@ -9,9 +9,9 @@ namespace Ambev.DeveloperEvaluation.Domain.Validation
         public SaleValidator()
         {
             RuleFor(sale => sale.Items)
-                .NotNull()
+                .Must(x => x.Count > 0)
                 .WithMessage("Sale should have at least one item.")
-                .Must(items => items.GroupBy(i => i.Product)
+                .Must(items => items.GroupBy(i => i.Product.Id)
                                 .All(g => g.Count() == 1))
                 .WithMessage("Duplicated product found, items list should have unique products.");
 

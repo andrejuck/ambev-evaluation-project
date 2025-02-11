@@ -7,7 +7,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
         public CreateSaleCommandValidator()
         {
             RuleFor(sale => sale.Items)
-                .NotNull()
+                .Must(x => x.Count > 0)
                 .WithMessage("Sale should have at least one item.")
                 .Must(items => items.GroupBy(i => i.Product.Id)
                                 .All(g => g.Count() == 1))
