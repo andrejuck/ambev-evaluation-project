@@ -1,0 +1,19 @@
+﻿using Ambev.DeveloperEvaluation.Domain.Entities;
+using FluentValidation;
+
+namespace Ambev.DeveloperEvaluation.Domain.Validation
+{
+    public class ProductValidator : AbstractValidator<Product>
+    {
+        public ProductValidator()
+        {
+            RuleFor(product => product.Name)
+                .NotEmpty()
+                .WithMessage("Product name should not be empty.");
+
+            RuleFor(product => product.UnitPrice)
+                .GreaterThan(0)
+                .WithMessage("Product unit price should be higher than zero.");
+        }
+    }
+}

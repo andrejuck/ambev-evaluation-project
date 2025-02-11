@@ -29,7 +29,7 @@ public class User : BaseEntity, IUser
     /// Gets the user's phone number.
     /// Must be a valid phone number format following the pattern (XX) XXXXX-XXXX.
     /// </summary>
-    public string Phone { get; set; } = string.Empty ;
+    public string Phone { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets the hashed password for authentication.
@@ -42,7 +42,7 @@ public class User : BaseEntity, IUser
     /// Gets the user's role in the system.
     /// Determines the user's permissions and access levels.
     /// </summary>
-    public UserRole Role { get;     set; }
+    public UserRole Role { get; set; }
 
     /// <summary>
     /// Gets the user's current status.
@@ -83,7 +83,7 @@ public class User : BaseEntity, IUser
     /// </summary>
     public User()
     {
-        CreatedAt = DateTime.UtcNow;
+        SetCreatedAt();
     }
 
     /// <summary>
@@ -121,7 +121,7 @@ public class User : BaseEntity, IUser
     public void Activate()
     {
         Status = UserStatus.Active;
-        UpdatedAt = DateTime.UtcNow;
+        SetUpdatedAt();
     }
 
     /// <summary>
@@ -131,7 +131,7 @@ public class User : BaseEntity, IUser
     public void Deactivate()
     {
         Status = UserStatus.Inactive;
-        UpdatedAt = DateTime.UtcNow;
+        SetUpdatedAt();
     }
 
     /// <summary>
@@ -141,6 +141,6 @@ public class User : BaseEntity, IUser
     public void Suspend()
     {
         Status = UserStatus.Suspended;
-        UpdatedAt = DateTime.UtcNow;
+        SetUpdatedAt();
     }
 }
